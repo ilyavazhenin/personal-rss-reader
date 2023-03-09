@@ -30,7 +30,7 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: 'index.html'
         }),
 
         // Add your plugins here

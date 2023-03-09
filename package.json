@@ -11,6 +11,7 @@
     "watch": "webpack --watch",
     "serve": "webpack serve"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ilyavazhenin/frontend-project-11.git"

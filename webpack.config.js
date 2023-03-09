@@ -1,8 +1,13 @@
 /* eslint-disable no-undef */
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import { resolve } from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -10,13 +15,17 @@ const isProduction = process.env.NODE_ENV == 'production';
 const config = {
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: resolve(__dirname, 'dist'),
         filename: 'index.js',
     },
+    devtool: 'inline-source-map',
     target: 'web',
+    watch: true,
     devServer: {
         open: true,
         host: 'localhost',
+        liveReload: true,
+        watchFiles: ["*"],
         hot: true,
     },
     plugins: [
@@ -48,7 +57,7 @@ const config = {
     },
 };
 
-module.exports = () => {
+export default () => {
     if (isProduction) {
         config.mode = 'production';
         

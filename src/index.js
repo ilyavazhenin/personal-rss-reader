@@ -1,5 +1,3 @@
-import  './styles.scss';
-import  'bootstrap';
+import './styles.scss';
 
 console.log("Hello World!");
-console.log("Hello World2!");

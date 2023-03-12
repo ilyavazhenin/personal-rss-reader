@@ -18,9 +18,12 @@ const config = {
         path: resolve(__dirname, 'dist'),
         filename: 'index.js',
     },
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
     target: 'web',
     watch: true,
+    watchOptions: {
+        ignored: /node_modules/,
+      },
     devServer: {
         open: true,
         host: 'localhost',

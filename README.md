@@ -5,6 +5,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/6cd21f902711d00721f2/maintainability)](https://codeclimate.com/github/ilyavazhenin/frontend-project-11/maintainability)
 
+[![Lint and Build test](https://github.com/ilyavazhenin/frontend-project-11/actions/workflows/lint-build-check.yml/badge.svg)](https://github.com/ilyavazhenin/frontend-project-11/actions/workflows/lint-build-check.yml)
 
 
 This project has been created using **webpack-cli**, you can now run

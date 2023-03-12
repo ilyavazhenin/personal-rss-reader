@@ -25,4 +25,5 @@ jobs:
 
     - name: Build
       run: make build
-      
+      env:
+        CI: true

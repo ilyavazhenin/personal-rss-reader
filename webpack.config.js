@@ -26,7 +26,7 @@ const config = {
     devServer: {
         open: true,
         host: 'localhost',
-        liveReload: true,
+        // liveReload: true,
         watchFiles: ["*"],
         hot: true,
     },

@@ -20,7 +20,6 @@ const config = {
     },
     // devtool: 'inline-source-map',
     target: 'web',
-    watch: true,
     watchOptions: {
         ignored: /node_modules/,
       },

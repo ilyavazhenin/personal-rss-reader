@@ -2,21 +2,10 @@ import './styles.scss';
 import { string } from 'yup';
 import onChange from 'on-change';
 
-const state = {
-  form: {
-    isValid: true,
-    errors: [],
-    tempInputValue: '',
-  },
-  feedsAdded: [],
-};
+import state from './state.js';
+import { form, render } from './render.js';
 
-console.log(state, 'initial state');
-
-const form = document.querySelector('form');
-const input = document.querySelector('input');
-const errParagraph = document.createElement('p');
-errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small', 'text-success', 'text-danger');
+const watchedState = onChange(state, render);
 
 const validateForm = async (url) => {
   let urlSchema = string().url();
@@ -42,24 +31,7 @@ const validateForm = async (url) => {
     });
 };
 
-const render = () => {
-  if (!state.form.isValid) {
-    input.classList.add('is-invalid');
-    errParagraph.textContent = state.form.errors[0];
-    form.append(errParagraph);
-  }
-  
-  if (state.form.isValid) {
-    console.log('LETS REMOVE CLASS');
-    input.classList.remove('is-invalid');
-    errParagraph.remove();
-  }
-  console.log('rendered OK!');
-  console.log(state, 'state after render');
-};
-
-const watchedState = onChange(state, render);
-
+// controller to change model on submit event:
 form.addEventListener('submit', async (e) => {
   console.log(e);
   e.preventDefault();

@@ -1,7 +1,7 @@
 const state = {
   form: {
     isValid: true,
-    errors: [],
+    error: '',
     tempInputValue: '',
   },
   feedsAdded: [],

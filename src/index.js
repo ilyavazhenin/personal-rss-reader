@@ -8,6 +8,8 @@ import axios from 'axios';
 
 const watchedState = onChange(state, render);
 
+let postIDCounter = 0;
+
 const getPostsDataFromDOM = (DOM) => {
   const feedTitle = DOM.querySelector('channel > title').textContent;
   const feedDescr = DOM.querySelector('channel > description').textContent;
@@ -18,13 +20,13 @@ const getPostsDataFromDOM = (DOM) => {
   state.lastFeedAdded.posts = [];
   const posts = Array.from(DOM.querySelectorAll('item'));
   console.log(posts, 'POSTS');
-  let idCounter = 0;
+  
   posts.forEach(el => {
     const post = { 
       title: el.querySelector('title').textContent,
       description: el.querySelector('description').textContent,
       link: el.querySelector('link').textContent,
-      id: ++idCounter,
+      id: ++postIDCounter,
     };
     state.lastFeedAdded.posts.push(post);
   })
@@ -47,13 +49,6 @@ const validateForm = async (url) => {
         rssExistsErr.message = 'RSS already added';
         throw rssExistsErr; 
       }
-
-      // if (!state.feedsAdded.includes(url)) {
-      //   state.form.isValid = true;
-      //   state.form.error = '';
-      //   watchedState.feedsAdded.push(url);
-      //   // return;
-      // }
     })
     .then(() => {
       return axios.get(`https://allorigins.hexlet.app/raw?url=${url}`)

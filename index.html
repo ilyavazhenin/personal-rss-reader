@@ -9,7 +9,7 @@
   <body class="d-flex flex-column min-vh-100">
     <main class="flex-grow-1">
       <section class="container-fluid bg-dark p-5">
-        <div class="row"><div class="col-md-10 col-lg-8 mx-auto text-white">
+        <div class="row">
           <div class="col-md-10 col-lg-8 mx-auto text-white">
             <h1 class="display-3 mb-0">RSS агрегатор<!DOCTYPE html>
             <html lang="en">
@@ -37,14 +37,37 @@
                 </div>
               </div>
             </form>
+            <p id="example" class="mt-2 mb-0 text-secondary">Пример: https://ru.hexlet.io/lessons.rss</p>
           </div>
         </div>
       </section>
 
-      <section class="container-fluid container-xxl p-5">
+      <section id="feeds-zone" class="d-none container-fluid container-xxl p-5">
         <div class="row">
-          <div class="col-md-10 col-lg-8 order-1 mx-auto posts"></div>
-          <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds"></div>
+
+          <div class="col-md-10 col-lg-8 order-1 mx-auto posts">
+            <div class="card border-0">
+              <div class="card-body">
+                <h2 class="card-title h4">Посты</h2>
+              </div>
+              <ul class="list-group border-0 rounded-0">
+                
+              </ul>
+            </div>
+          </div>
+
+            
+          <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds">
+            <div class="card border-0">
+              <div class="card-body">
+                <h2 class="card-title h4">Фиды</h2>
+              </div>
+              <ul class="list-group border-0 rounded-0">
+                
+              </ul>
+            </div>
+          </div>
+
         </div>
       </section>
     </main>

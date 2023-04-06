@@ -8,16 +8,18 @@ import axios from 'axios';
 
 const watchedState = onChange(state, render);
 
+let feedIDCounter = 0;
 let postIDCounter = 0;
 
 const getPostsDataFromDOM = (DOM) => {
   const feedTitle = DOM.querySelector('channel > title').textContent;
   const feedDescr = DOM.querySelector('channel > description').textContent;
-  let feedID = state.lastFeedAdded.id + 1;
-  state.lastFeedAdded.id = feedID;
-  state.lastFeedAdded.title = feedTitle;
-  state.lastFeedAdded.description = feedDescr;
-  state.lastFeedAdded.posts = [];
+  const feed = {
+    feedID: ++feedIDCounter,
+    title: feedTitle,
+    description: feedDescr,
+  };
+  state.feedsAdded.push(feed);
   const posts = Array.from(DOM.querySelectorAll('item'));
   console.log(posts, 'POSTS');
   
@@ -26,9 +28,10 @@ const getPostsDataFromDOM = (DOM) => {
       title: el.querySelector('title').textContent,
       description: el.querySelector('description').textContent,
       link: el.querySelector('link').textContent,
-      id: ++postIDCounter,
+      postID: ++postIDCounter,
+      feedID: feedIDCounter,
     };
-    state.lastFeedAdded.posts.push(post);
+    state.postsAdded.push(post);
   })
 
 };

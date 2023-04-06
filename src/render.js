@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import modal from 'bootstrap/js/dist/modal.js';
 import i18next from 'i18next';
 // import { setLocale } from 'yup';
 
@@ -10,6 +12,11 @@ errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
 const form = document.querySelector('form');
 const input = document.querySelector('input');
 const rssExampleP = document.querySelector('#example');
+// const modal = document.querySelector('#modal');
+// const body = document.querySelector('body');
+const modalTitle = document.querySelector('.modal-title');
+const modalDescr = document.querySelector('.modal-body');
+const modalLink = document.querySelector('.full-article');
 
 const i18nInst = i18next.createInstance();
 i18nInst.init({
@@ -38,27 +45,37 @@ const feedPClassList = ['m-0', 'small', 'text-black-50'];
 const renderFeed = () => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
 
-  state.lastFeedAdded.posts.forEach(el => {
-    const postLi = document.createElement('li');
-    const postLink = document.createElement('a');
-    const postButton = document.createElement('button');  
+  state.postsAdded.filter(el => el.feedID === state.feedsAdded[state.feedsAdded.length - 1].feedID)
+    .forEach(el => {
+      const postLi = document.createElement('li');
+      const postLink = document.createElement('a');
+      const postButton = document.createElement('button');  
 
-    postLi.classList.add(...postLiClassList);
-    postLink.classList.add('fw-bold');
-    postButton.classList.add(...postButtonClassList);
-    postLink.setAttribute('data-id', `${el.id}`);
-    postLink.setAttribute('target', '_blank');
-    postButton.setAttribute('type', 'button');
-    postButton.setAttribute('data-id', `${el.id}`);
-    postButton.setAttribute('data-bs-toggle', 'modal');
-    postButton.setAttribute('data-bs-target', '#modal');
-    postLink.textContent = el.title;
-    postLink.setAttribute('href', `${el.link}`);
-    postButton.textContent = i18nInst.t('viewPost');
+      postLi.classList.add(...postLiClassList);
+      postLink.classList.add('fw-bold');
+      postButton.classList.add(...postButtonClassList);
+      postLink.setAttribute('data-id', `${el.postID}`);
+      postLink.setAttribute('target', '_blank');
+      postLink.textContent = el.title;
+      postLink.setAttribute('href', `${el.link}`);
+      postButton.setAttribute('type', 'button');
+      postButton.setAttribute('data-id', `${el.postID}`);
+      postButton.setAttribute('data-bs-toggle', 'modal');
+      postButton.setAttribute('data-bs-target', '#modal');
+      postButton.textContent = i18nInst.t('viewPost');
+      
+      postButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = Number(e.target.getAttribute('data-id'));
+        const post = state.postsAdded.find(el => el.postID === id);
+        modalTitle.textContent = post.title;
+        modalDescr.textContent = post.description;
+        modalLink.setAttribute('href', `${post.link}`);
+      });
 
-    postsList.appendChild(postLi);
-    postLi.appendChild(postLink);
-    postLi.appendChild(postButton);
+      postsList.appendChild(postLi);
+      postLi.appendChild(postLink);
+      postLi.appendChild(postButton);
   });
 
   const feedLi = document.createElement('li');
@@ -69,8 +86,8 @@ const renderFeed = () => {
   feedH3.classList.add('h6', 'm-0');
   feedP.classList.add(...feedPClassList);
 
-  feedH3.textContent = state.lastFeedAdded.title;
-  feedP.textContent = state.lastFeedAdded.description;
+  feedH3.textContent = state.feedsAdded[state.feedsAdded.length - 1].title;
+  feedP.textContent = state.feedsAdded[state.feedsAdded.length - 1].description;
 
   feedList.appendChild(feedLi);
   feedLi.appendChild(feedH3);

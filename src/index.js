@@ -48,14 +48,12 @@ const validateForm = async (url) => {
     .then(() => {
       if (state.urlsAdded.includes(url)) {
         const rssExistsErr = new Error();
-        rssExistsErr.type = 'rssAlreadyAdded';
+        rssExistsErr.name = 'RSSAlreadyAdded';
         rssExistsErr.message = 'RSS already added';
         throw rssExistsErr; 
       }
     })
-    .then(() => {
-      return axios.get(`https://allorigins.hexlet.app/raw?url=${url}`)
-    })
+    .then(() => axios.get(`https://allorigins.hexlet.app/raw?url=${url}`))
     .then(response => {
       console.log(response, 'just response');
       state.DOM = makeDOM(response.data);
@@ -69,14 +67,14 @@ const validateForm = async (url) => {
       }
       else {
         const rssNotValid = new Error();
-        rssNotValid.type = 'rssNotValid';
+        rssNotValid.name = 'RSSNotValid';
         rssNotValid.message = 'No valid RSS at this URL';
         throw rssNotValid; 
       }
     })
     .catch((err) => {
       console.log(JSON.stringify(err), err.message, ' - MESSAGE ERROR');
-      state.form.error = err.type;
+      state.form.error = err.name;
       watchedState.form.isValid = false;
       // ниже костыль, пока не знаю как заставить рендер срабатывать один раз. Если добавлю
       // слежение за полем form.error - будет рендерится два раза подряд. 

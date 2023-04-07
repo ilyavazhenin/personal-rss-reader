@@ -9,10 +9,10 @@ export default {
     readFull: 'Читать полностью',
     rssLoaded: 'RSS успешно загружен',
     errors: {
-      rssNotValid: 'Ресурс не содержит валидный RSS',
-      url: 'Ссылка должна быть валидным URL',
-      rssAlreadyAdded: 'RSS уже существует',
-      networkError: 'Ошибка сети',
+      RSSNotValid: 'Ресурс не содержит валидный RSS',
+      ValidationError: 'Ссылка должна быть валидным URL',
+      RSSAlreadyAdded: 'RSS уже существует',
+      AxiosError: 'Ошибка сети',
     },
   },
 };

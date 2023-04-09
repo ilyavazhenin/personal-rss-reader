@@ -42,10 +42,16 @@ const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
 
 
-const renderFeed = () => {
+const renderPosts = () => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
+  const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
+    .map(item => item.getAttribute('data-id'));
+  console.log(alreadyRenderedIDs, 'LIST OF ALL POSTS ON PAGE');
 
-  state.postsAdded.filter(el => el.feedID === state.feedsAdded[state.feedsAdded.length - 1].feedID)
+  state.postsAdded.filter(post => {
+    console.log(post, 'CHECK');
+    return !alreadyRenderedIDs.includes(post.postID);
+  })
     .forEach(el => {
       const postLi = document.createElement('li');
       const postLink = document.createElement('a');
@@ -60,13 +66,14 @@ const renderFeed = () => {
       postLink.setAttribute('href', `${el.link}`);
       postButton.setAttribute('type', 'button');
       postButton.setAttribute('data-id', `${el.postID}`);
+      postButton.setAttribute('data-feedID', `${el.feedID}`);
       postButton.setAttribute('data-bs-toggle', 'modal');
       postButton.setAttribute('data-bs-target', '#modal');
       postButton.textContent = i18nInst.t('viewPost');
       
       postButton.addEventListener('click', (e) => {
         e.preventDefault();
-        const id = Number(e.target.getAttribute('data-id'));
+        const id = e.target.getAttribute('data-id');
         const post = state.postsAdded.find(el => el.postID === id);
         modalTitle.textContent = post.title;
         modalDescr.textContent = post.description;
@@ -77,7 +84,9 @@ const renderFeed = () => {
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
   });
+};
 
+const renderFeed = () => {
   const feedLi = document.createElement('li');
   const feedH3 = document.createElement('h3');
   const feedP = document.createElement('p');
@@ -94,7 +103,7 @@ const renderFeed = () => {
   feedLi.appendChild(feedP);
 };
 
-const renderSuccess = () => {
+const renderSuccessForm = () => {
   console.log('LETS REMOVE CLASS');
   input.classList.remove('is-invalid');
   errParagraph.classList.remove('text-danger');
@@ -105,7 +114,7 @@ const renderSuccess = () => {
   input.focus();
 };
 
-const renderWithError = () => {
+const renderErrorsForm = () => {
   input.classList.add('is-invalid');
   errParagraph.classList.remove('text-success');
   errParagraph.classList.add('text-danger');
@@ -114,19 +123,23 @@ const renderWithError = () => {
 };
 
 const render = (path, value) => {
-  const formIsValid = value;
   console.log(path, 'CHANGED PATH');
-  if (!formIsValid) {
-    console.log('RENDERING ERRORS');
-    renderWithError();
-  }
-  
-  if (formIsValid) {
-    console.log('RENDERING SUCCESS');
-    renderSuccess();
-    renderFeed();
+  if (path === 'form.isValid') {
+    const formIsValid = value;
+    
+    if (!formIsValid) {
+      console.log('RENDERING ERRORS');
+      renderErrorsForm();
+    }
+    
+    if (formIsValid) {
+      console.log('RENDERING SUCCESS');
+      renderSuccessForm();
+    }
   }
 
+  if (path === 'feedsAdded') renderFeed();
+  if (path === 'postsAdded') renderPosts();
   console.log(state, 'state after render');
 };
 

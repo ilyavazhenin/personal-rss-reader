@@ -1,6 +1,6 @@
 const state = {
   form: {
-    isValid: true,
+    isValid: '',
     error: '',
     tempInputValue: '',
   },

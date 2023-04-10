@@ -12,8 +12,6 @@ errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
 const form = document.querySelector('form');
 const input = document.querySelector('input');
 const rssExampleP = document.querySelector('#example');
-// const modal = document.querySelector('#modal');
-// const body = document.querySelector('body');
 const modalTitle = document.querySelector('.modal-title');
 const modalDescr = document.querySelector('.modal-body');
 const modalLink = document.querySelector('.full-article');
@@ -39,8 +37,6 @@ const postLiClassList = ['list-group-item', 'd-flex', 'justify-content-between',
 const postButtonClassList = ['btn', 'btn-outline-primary', 'btn-sm'];
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
-
-
 
 const renderPosts = () => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
@@ -79,10 +75,18 @@ const renderPosts = () => {
         modalDescr.textContent = post.description;
         modalLink.setAttribute('href', `${post.link}`);
       });
-
-      postsList.appendChild(postLi);
+ 
+      postsList.prepend(postLi);
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
+      // помечаем прочитанные посты, нужно ли хранить в стейте? 
+      // Пока обошелся только html, ведь синхронизации с бэком нет:
+      postLi.addEventListener('click', (e) => {
+        const postTitleID = e.target.getAttribute('data-id');
+        const visitedPost = document.querySelector(`a[data-id="${postTitleID}"]`);
+        visitedPost.classList.remove('fw-bold');
+        visitedPost.classList.add('fw-normal', 'link-secondary');
+      });
   });
 };
 
@@ -98,7 +102,7 @@ const renderFeed = () => {
   feedH3.textContent = state.feedsAdded[state.feedsAdded.length - 1].title;
   feedP.textContent = state.feedsAdded[state.feedsAdded.length - 1].description;
 
-  feedList.appendChild(feedLi);
+  feedList.prepend(feedLi);
   feedLi.appendChild(feedH3);
   feedLi.appendChild(feedP);
 };

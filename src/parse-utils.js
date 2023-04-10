@@ -42,7 +42,6 @@ const getOnlyNewPosts = (postsArray, addedPosts) => {
         feedID: feedIDCounter,
       };
       newPosts.push(post);
-      // state.postsAdded.push(post);
     }
   });
   console.log(newPosts, 'NEWPOSTS');

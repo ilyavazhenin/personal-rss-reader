@@ -36,7 +36,6 @@ const validateForm = async (url) => {
         watchedState.feedsAdded = state.feedsAdded.concat(newFeed);
         console.log(state.postsAdded, 'добавленные посты в стейт ПЕРЕД рендерингом')
         state.urlsAdded.push(url);
-        // return;
       }
       else {
         const rssNotValid = new Error();
@@ -79,5 +78,5 @@ form.addEventListener('submit', async (e) => {
   const formData = new FormData(form);
   const inputValue = formData.get('url');
   validateForm(inputValue);
-  state.updatingTimer = setTimeout(checkForNewPosts, 5000);
+  state.updatingTimer = setTimeout(checkForNewPosts.bind(null, state), 5000);
 });

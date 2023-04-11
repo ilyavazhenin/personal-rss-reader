@@ -1,5 +1,7 @@
 import some from 'lodash.some';
 
+const urlTemplate = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
+
 let feedIDCounter = 0;
 
 const makeDOM = (response) => {
@@ -10,7 +12,6 @@ const makeDOM = (response) => {
 
 const getPostsDataFromDOM = (DOM) => {
   const posts = Array.from(DOM.querySelectorAll('item'));
-  console.log(posts, 'POSTS');
   return posts;
 };
 
@@ -29,10 +30,6 @@ const getOnlyNewPosts = (postsArray, addedPosts) => {
   const newPosts = [];
   postsArray.forEach((item) => {
     const postID = item.querySelector('guid').textContent;
-    console.log(some(addedPosts, ['postID', postID]), 'SOME RESULT');
-    console.log(addedPosts, 'AddedPosts');
-    console.log(postID, 'item.postID');
-    console.log(item, 'item');
     if (!some(addedPosts, ['postID', postID])) {
       const post = {
         title: item.querySelector('title').textContent,
@@ -44,10 +41,9 @@ const getOnlyNewPosts = (postsArray, addedPosts) => {
       newPosts.push(post);
     }
   });
-  console.log(newPosts, 'NEWPOSTS');
   return newPosts;
 };
 
 export {
-  getPostsDataFromDOM, getFeedHeadingsFromDOM, getOnlyNewPosts, makeDOM,
+  getPostsDataFromDOM, getFeedHeadingsFromDOM, getOnlyNewPosts, makeDOM, urlTemplate,
 };

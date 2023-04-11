@@ -1,11 +1,11 @@
-/* eslint-disable import/extensions */
 // eslint-disable-next-line no-unused-vars
 import modal from 'bootstrap/js/dist/modal.js';
 import i18next from 'i18next';
-// import { setLocale } from 'yup';
 
 import resources from './locales/index.js';
 import state from './state.js';
+import changeVisitedPostsStyle from './utils/visited-posts.js';
+import { createPostButton, createPostLi, createPostLink } from './utils/posts-render-helpers.js';
 
 const errParagraph = document.createElement('p');
 errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
@@ -24,18 +24,8 @@ i18nInst.init({
   resources,
 });
 
-// setLocale({
-//   mixed: {
-//     default: 'invalid field',
-//   },
-//   string: {
-//     url: () => ({ key: 'errors.notURL'}),
-//   },
-// });
 const postsList = document.querySelector('.posts .list-group');
 const feedList = document.querySelector('.feeds .list-group');
-const postLiClassList = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0'];
-const postButtonClassList = ['btn', 'btn-outline-primary', 'btn-sm'];
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
@@ -43,29 +33,12 @@ const renderPosts = () => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
   const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
     .map((item) => item.getAttribute('data-id'));
-  console.log(alreadyRenderedIDs, 'LIST OF ALL POSTS ON PAGE');
 
-  state.postsAdded.filter((post) => {
-    console.log(post, 'CHECK');
-    return !alreadyRenderedIDs.includes(post.postID);
-  })
+  state.postsAdded.filter((post) => !alreadyRenderedIDs.includes(post.postID))
     .forEach((el) => {
-      const postLi = document.createElement('li');
-      const postLink = document.createElement('a');
-      const postButton = document.createElement('button');
-
-      postLi.classList.add(...postLiClassList);
-      postLink.classList.add('fw-bold');
-      postButton.classList.add(...postButtonClassList);
-      postLink.setAttribute('data-id', `${el.postID}`);
-      postLink.setAttribute('target', '_blank');
-      postLink.textContent = el.title;
-      postLink.setAttribute('href', `${el.link}`);
-      postButton.setAttribute('type', 'button');
-      postButton.setAttribute('data-id', `${el.postID}`);
-      postButton.setAttribute('data-feedID', `${el.feedID}`);
-      postButton.setAttribute('data-bs-toggle', 'modal');
-      postButton.setAttribute('data-bs-target', '#modal');
+      const postLi = createPostLi();
+      const postLink = createPostLink(el);
+      const postButton = createPostButton(el);
       postButton.textContent = i18nInst.t('viewPost');
 
       postButton.addEventListener('click', (e) => {
@@ -80,14 +53,8 @@ const renderPosts = () => {
       postsList.prepend(postLi);
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
-      // помечаем прочитанные посты, нужно ли хранить в стейте?
-      // Пока обошелся только html, ведь синхронизации с бэком нет:
-      postLi.addEventListener('click', (e) => {
-        const postTitleID = e.target.getAttribute('data-id');
-        const visitedPost = document.querySelector(`a[data-id="${postTitleID}"]`);
-        visitedPost.classList.remove('fw-bold');
-        visitedPost.classList.add('fw-normal', 'link-secondary');
-      });
+
+      changeVisitedPostsStyle(postLi);
     });
 };
 
@@ -109,7 +76,6 @@ const renderFeed = () => {
 };
 
 const renderSuccessForm = () => {
-  console.log('LETS REMOVE CLASS');
   input.classList.remove('is-invalid');
   errParagraph.classList.remove('text-danger');
   errParagraph.classList.add('text-success');
@@ -128,24 +94,11 @@ const renderErrorsForm = () => {
 };
 
 const render = (path, value) => {
-  console.log(path, 'CHANGED PATH');
-  if (path === 'form.isValid') {
-    const formIsValid = value;
-
-    if (!formIsValid) {
-      console.log('RENDERING ERRORS');
-      renderErrorsForm();
-    }
-
-    if (formIsValid) {
-      console.log('RENDERING SUCCESS');
-      renderSuccessForm();
-    }
-  }
-
+  if (path === 'form.isValid' && value === true) renderSuccessForm();
+  if (path === 'form.error') renderErrorsForm();
   if (path === 'feedsAdded') renderFeed();
   if (path === 'postsAdded') renderPosts();
-  console.log(state, 'state after render');
+  // console.log(state, 'state after render');
 };
 
 export { form, render };

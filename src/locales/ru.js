@@ -13,6 +13,7 @@ export default {
       ValidationError: 'Ссылка должна быть валидным URL',
       RSSAlreadyAdded: 'RSS уже существует',
       AxiosError: 'Ошибка сети',
+      UpdateError: 'Ошибка при автообновлении добавленных фидов',
     },
   },
 };

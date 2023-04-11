@@ -21,10 +21,10 @@ const validateForm = async (url) => {
         throw rssExistsErr; 
       }
     })
-    .then(() => axios.get(`https://allorigins.hexlet.app/raw?url=${url}`, {'Cache-Control': 'no-cache'}))
+    .then(() => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`))
     .then(response => {
       console.log(response, 'just response');
-      state.DOM = makeDOM(response.data);
+      state.DOM = makeDOM(response.data.contents);
       console.log(state.DOM, 'STATE DOM');
       watchedState.form.isValid = true;
       state.form.error = '';
@@ -58,7 +58,7 @@ const validateForm = async (url) => {
 const checkForNewPosts = () => {
   if (!state.urlsAdded.length) throw new Error('No feeds added to auto-update');
   clearTimeout(state.updatingTimer);
-  const requests = state.urlsAdded.map(url => axios.get(`https://allorigins.hexlet.app/raw?url=${url}`, {'Cache-Control': 'no-cache'}));
+  const requests = state.urlsAdded.map(url => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`));
   Promise.all(requests)
     .then(responses => responses.map(response => {
       const tempDOM = makeDOM(response.data);

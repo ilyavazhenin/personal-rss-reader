@@ -1,10 +1,10 @@
 import './styles.scss';
-import { string } from 'yup';
 import onChange from 'on-change';
 import axios from 'axios';
 
 import state from './state.js';
 import { form, render } from './render.js';
+import validateForm from './utils/form-validation.js';
 
 import {
   makeDOM,
@@ -17,16 +17,7 @@ import {
 const watchedState = onChange(state, render);
 
 const processForm = async (url) => { // validates form, proceeds with axios response, catches errors
-  const urlSchema = string().url();
-  await urlSchema.validate(url)
-    .then(() => {
-      if (state.urlsAdded.includes(url)) {
-        const rssExistsErr = new Error();
-        rssExistsErr.name = 'RSSAlreadyAdded';
-        rssExistsErr.message = 'RSS already added';
-        throw rssExistsErr;
-      }
-    })
+  validateForm(url, state.urlsAdded)
     .then(() => axios.get(`${urlTemplate}${url}`))
     .then((response) => {
       const DOM = makeDOM(response.data.contents);

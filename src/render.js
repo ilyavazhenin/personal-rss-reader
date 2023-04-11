@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 // eslint-disable-next-line no-unused-vars
 import modal from 'bootstrap/js/dist/modal.js';
 import i18next from 'i18next';
@@ -41,17 +42,17 @@ const feedPClassList = ['m-0', 'small', 'text-black-50'];
 const renderPosts = () => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
   const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
-    .map(item => item.getAttribute('data-id'));
+    .map((item) => item.getAttribute('data-id'));
   console.log(alreadyRenderedIDs, 'LIST OF ALL POSTS ON PAGE');
 
-  state.postsAdded.filter(post => {
+  state.postsAdded.filter((post) => {
     console.log(post, 'CHECK');
     return !alreadyRenderedIDs.includes(post.postID);
   })
-    .forEach(el => {
+    .forEach((el) => {
       const postLi = document.createElement('li');
       const postLink = document.createElement('a');
-      const postButton = document.createElement('button');  
+      const postButton = document.createElement('button');
 
       postLi.classList.add(...postLiClassList);
       postLink.classList.add('fw-bold');
@@ -66,20 +67,20 @@ const renderPosts = () => {
       postButton.setAttribute('data-bs-toggle', 'modal');
       postButton.setAttribute('data-bs-target', '#modal');
       postButton.textContent = i18nInst.t('viewPost');
-      
+
       postButton.addEventListener('click', (e) => {
         e.preventDefault();
         const id = e.target.getAttribute('data-id');
-        const post = state.postsAdded.find(el => el.postID === id);
+        const post = state.postsAdded.find((elem) => elem.postID === id);
         modalTitle.textContent = post.title;
         modalDescr.textContent = post.description;
         modalLink.setAttribute('href', `${post.link}`);
       });
- 
+
       postsList.prepend(postLi);
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
-      // помечаем прочитанные посты, нужно ли хранить в стейте? 
+      // помечаем прочитанные посты, нужно ли хранить в стейте?
       // Пока обошелся только html, ведь синхронизации с бэком нет:
       postLi.addEventListener('click', (e) => {
         const postTitleID = e.target.getAttribute('data-id');
@@ -87,7 +88,7 @@ const renderPosts = () => {
         visitedPost.classList.remove('fw-bold');
         visitedPost.classList.add('fw-normal', 'link-secondary');
       });
-  });
+    });
 };
 
 const renderFeed = () => {
@@ -130,12 +131,12 @@ const render = (path, value) => {
   console.log(path, 'CHANGED PATH');
   if (path === 'form.isValid') {
     const formIsValid = value;
-    
+
     if (!formIsValid) {
       console.log('RENDERING ERRORS');
       renderErrorsForm();
     }
-    
+
     if (formIsValid) {
       console.log('RENDERING SUCCESS');
       renderSuccessForm();

@@ -18,7 +18,7 @@ const getFeedHeadingsFromDOM = (DOM) => {
   const feedTitle = DOM.querySelector('channel > title').textContent;
   const feedDescr = DOM.querySelector('channel > description').textContent;
   const feed = {
-    feedID: ++feedIDCounter,
+    feedID: feedIDCounter += 1,
     title: feedTitle,
     description: feedDescr,
   };
@@ -27,14 +27,14 @@ const getFeedHeadingsFromDOM = (DOM) => {
 
 const getOnlyNewPosts = (postsArray, addedPosts) => {
   const newPosts = [];
-  postsArray.forEach(item => {
+  postsArray.forEach((item) => {
     const postID = item.querySelector('guid').textContent;
     console.log(some(addedPosts, ['postID', postID]), 'SOME RESULT');
     console.log(addedPosts, 'AddedPosts');
     console.log(postID, 'item.postID');
     console.log(item, 'item');
     if (!some(addedPosts, ['postID', postID])) {
-      const post = { 
+      const post = {
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
@@ -48,4 +48,6 @@ const getOnlyNewPosts = (postsArray, addedPosts) => {
   return newPosts;
 };
 
-export { getPostsDataFromDOM, getFeedHeadingsFromDOM, getOnlyNewPosts, makeDOM };
+export {
+  getPostsDataFromDOM, getFeedHeadingsFromDOM, getOnlyNewPosts, makeDOM,
+};

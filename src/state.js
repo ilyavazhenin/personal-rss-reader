@@ -5,8 +5,8 @@ const state = {
     tempInputValue: '',
   },
   urlsAdded: [],
-  feedsAdded: [], //{ feedID, title, descripton }
-  postsAdded: [], //{ feedID, postID, title, description, link }
+  feedsAdded: [], // { feedID, title, descripton }
+  postsAdded: [], // { feedID, postID, title, description, link }
 };
 
 export default state;

@@ -16,7 +16,6 @@ const config = {
     path: resolve(directoryName, 'dist'),
     filename: 'index.js',
   },
-  // devtool: 'inline-source-map',
   target: 'web',
   watchOptions: {
     ignored: /node_modules/,
@@ -24,7 +23,6 @@ const config = {
   devServer: {
     open: true,
     host: 'localhost',
-    // liveReload: true,
     watchFiles: ['*'],
     hot: true,
   },
@@ -32,9 +30,6 @@ const config = {
     new HtmlWebpackPlugin({
       template: 'index.html',
     }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
     rules: [
@@ -49,9 +44,6 @@ const config = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
       },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
 };

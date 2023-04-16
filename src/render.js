@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import modal from 'bootstrap/js/dist/modal.js';
 import i18next from 'i18next';
 
 import resources from './locales/index.js';

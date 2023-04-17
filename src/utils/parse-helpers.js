@@ -1,4 +1,6 @@
 import some from 'lodash.some';
+import axios from 'axios';
+import state from '../state.js';
 
 const urlTemplate = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
 
@@ -44,6 +46,38 @@ const getOnlyNewPosts = (postsArray, addedPosts) => {
   return newPosts;
 };
 
-export {
-  getPostsDataFromDOM, getFeedHeadingsFromDOM, getOnlyNewPosts, makeDOM, urlTemplate,
+const checkForNewPosts = (watchedState) => {
+  clearTimeout(state.updateTimer);
+  const requests = state.urlsAdded.map((url) => axios.get(`${urlTemplate}${url}`));
+  Promise.all(requests)
+    .then((responses) => responses.forEach((response) => {
+      const tempDOM = makeDOM(response.data.contents);
+      const postsData = getPostsDataFromDOM(tempDOM);
+      const newPosts = getOnlyNewPosts(postsData, state.postsAdded);
+      watchedState.postsAdded.push(...newPosts);
+      state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
+    }));
 };
+
+const getFeedAndPosts = (responseContent, watchedState, url) => {
+  const DOM = makeDOM(responseContent);
+  // eslint-disable-next-line no-param-reassign
+  watchedState.form.isValid = true;
+  state.form.error = '';
+  if (DOM.querySelector('rss' && '[version]')) {
+    const postsData = getPostsDataFromDOM(DOM);
+    const newFeed = getFeedHeadingsFromDOM(DOM);
+    const newPosts = getOnlyNewPosts(postsData, state.postsAdded);
+    watchedState.postsAdded.push(...newPosts);
+    watchedState.feedsAdded.push(newFeed);
+    state.urlsAdded.push(url);
+    state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
+  } else {
+    const rssNotValid = new Error();
+    rssNotValid.name = 'RSSNotValid';
+    rssNotValid.message = 'No valid RSS at this URL';
+    throw rssNotValid;
+  }
+};
+
+export { urlTemplate, getFeedAndPosts };

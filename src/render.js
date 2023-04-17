@@ -8,13 +8,6 @@ import { createPostButton, createPostLi, createPostLink } from './utils/posts-re
 const errParagraph = document.createElement('p');
 errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
 
-const form = document.querySelector('form');
-const input = document.querySelector('input');
-const rssExampleP = document.querySelector('#example');
-const modalTitle = document.querySelector('.modal-title');
-const modalDescr = document.querySelector('.modal-body');
-const modalLink = document.querySelector('.full-article');
-
 const i18nInst = i18next.createInstance();
 i18nInst.init({
   debug: true,
@@ -22,12 +15,10 @@ i18nInst.init({
   resources,
 });
 
-const postsList = document.querySelector('.posts .list-group');
-const feedList = document.querySelector('.feeds .list-group');
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
-const renderPosts = () => {
+const renderPosts = (elements) => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
   const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
     .map((item) => item.getAttribute('data-id'));
@@ -43,12 +34,13 @@ const renderPosts = () => {
         e.preventDefault();
         const id = e.target.getAttribute('data-id');
         const post = state.postsAdded.find((elem) => elem.postID === id);
+        const { modalTitle, modalDescr } = elements;
         modalTitle.textContent = post.title;
         modalDescr.textContent = post.description;
-        modalLink.setAttribute('href', `${post.link}`);
+        elements.modalLink.setAttribute('href', `${post.link}`);
       });
 
-      postsList.prepend(postLi);
+      elements.postsList.prepend(postLi);
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
 
@@ -56,7 +48,7 @@ const renderPosts = () => {
     });
 };
 
-const renderFeed = () => {
+const renderFeed = (elements) => {
   const feedLi = document.createElement('li');
   const feedH3 = document.createElement('h3');
   const feedP = document.createElement('p');
@@ -68,35 +60,36 @@ const renderFeed = () => {
   feedH3.textContent = state.feedsAdded[state.feedsAdded.length - 1].title;
   feedP.textContent = state.feedsAdded[state.feedsAdded.length - 1].description;
 
-  feedList.prepend(feedLi);
+  elements.feedList.prepend(feedLi);
   feedLi.appendChild(feedH3);
   feedLi.appendChild(feedP);
 };
 
-const renderSuccessForm = () => {
-  input.classList.remove('is-invalid');
+const renderSuccessForm = (elements) => {
+  elements.input.classList.remove('is-invalid');
   errParagraph.classList.remove('text-danger');
   errParagraph.classList.add('text-success');
   errParagraph.textContent = i18nInst.t('rssLoaded');
-  rssExampleP.insertAdjacentElement('afterend', errParagraph);
+  elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
+  const { input } = elements;
   input.value = '';
-  input.focus();
+  elements.input.focus();
 };
 
-const renderErrorsForm = () => {
-  input.classList.add('is-invalid');
+const renderErrorsForm = (elements) => {
+  elements.input.classList.add('is-invalid');
   errParagraph.classList.remove('text-success');
   errParagraph.classList.add('text-danger');
   errParagraph.textContent = i18nInst.t(`errors.${state.form.error}`);
-  rssExampleP.insertAdjacentElement('afterend', errParagraph);
+  elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
 };
 
-const render = (path, value) => {
-  if (path === 'form.isValid' && value === true) renderSuccessForm();
-  if (path === 'form.error') renderErrorsForm();
-  if (path === 'feedsAdded') renderFeed();
-  if (path === 'postsAdded') renderPosts();
+const render = (elements) => (path, value) => {
+  if (path === 'form.isValid' && value === true) renderSuccessForm(elements);
+  if (path === 'form.error') renderErrorsForm(elements);
+  if (path === 'feedsAdded') renderFeed(elements);
+  if (path === 'postsAdded') renderPosts(elements);
   // console.log(state, 'state after render');
 };
 
-export { form, render };
+export default render;

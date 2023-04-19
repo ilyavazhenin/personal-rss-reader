@@ -16,7 +16,7 @@ import {
   getFeedHeadingsFromDOM,
 } from './utils/parse-helpers.js';
 
-const runApp = () => {
+export default () => {
   const elements = {
     form: document.querySelector('form'),
     input: document.querySelector('input'),
@@ -117,5 +117,3 @@ const runApp = () => {
     });
   });
 };
-
-export default runApp;

@@ -32,8 +32,10 @@ const runApp = () => {
         getFeedAndPosts(response.data.contents, watchedState, url);
       })
       .catch((err) => {
-        // console.log(JSON.stringify(err), err.message);
-        watchedState.form.error = err.name;
+        // console.log(err);
+        // eslint-disable-next-line no-param-reassign
+        if (err.name === 'AxiosError') err.type = 'AxiosError';
+        watchedState.form.error = err.type;
         state.form.isValid = false;
       });
   };

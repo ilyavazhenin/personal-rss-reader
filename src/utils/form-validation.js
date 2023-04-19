@@ -1,16 +1,8 @@
 import { string } from 'yup';
 
 const validateForm = async (inputValue, urlsAdded) => {
-  const urlSchema = string().url();
-  await urlSchema.validate(inputValue)
-    .then(() => {
-      if (urlsAdded.includes(inputValue)) {
-        const rssExistsErr = new Error();
-        rssExistsErr.name = 'RSSAlreadyAdded';
-        rssExistsErr.message = 'RSS already added';
-        throw rssExistsErr;
-      }
-    });
+  const urlSchema = string().url().notOneOf(urlsAdded);
+  await urlSchema.validate(inputValue);
 };
 
 export default validateForm;

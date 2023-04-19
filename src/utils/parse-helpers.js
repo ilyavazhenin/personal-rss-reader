@@ -74,8 +74,7 @@ const getFeedAndPosts = (responseContent, watchedState, url) => {
     state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
   } else {
     const rssNotValid = new Error();
-    rssNotValid.name = 'RSSNotValid';
-    rssNotValid.message = 'No valid RSS at this URL';
+    rssNotValid.type = 'RSSNotValid';
     throw rssNotValid;
   }
 };

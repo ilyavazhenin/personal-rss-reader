@@ -10,8 +10,8 @@ export default {
     rssLoaded: 'RSS успешно загружен',
     errors: {
       RSSNotValid: 'Ресурс не содержит валидный RSS',
-      ValidationError: 'Ссылка должна быть валидным URL',
-      RSSAlreadyAdded: 'RSS уже существует',
+      url: 'Ссылка должна быть валидным URL',
+      notOneOf: 'RSS уже существует',
       AxiosError: 'Ошибка сети',
       UpdateError: 'Ошибка при автообновлении добавленных фидов',
     },

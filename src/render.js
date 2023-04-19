@@ -1,6 +1,3 @@
-import i18next from 'i18next';
-
-import resources from './locales/index.js';
 import state from './state.js';
 import changeVisitedPostsStyle from './utils/visited-posts.js';
 import { createPostButton, createPostLi, createPostLink } from './utils/posts-render-helpers.js';
@@ -8,17 +5,10 @@ import { createPostButton, createPostLi, createPostLink } from './utils/posts-re
 const errParagraph = document.createElement('p');
 errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
 
-const i18nInst = i18next.createInstance();
-i18nInst.init({
-  debug: true,
-  lng: 'ru',
-  resources,
-});
-
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
-const renderPosts = (elements) => {
+const renderPosts = (elements, i18instance) => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
   const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
     .map((item) => item.getAttribute('data-id'));
@@ -28,17 +18,7 @@ const renderPosts = (elements) => {
       const postLi = createPostLi();
       const postLink = createPostLink(el);
       const postButton = createPostButton(el);
-      postButton.textContent = i18nInst.t('viewPost');
-
-      postButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = e.target.getAttribute('data-id');
-        const post = state.postsAdded.find((elem) => elem.postID === id);
-        const { modalTitle, modalDescr } = elements;
-        modalTitle.textContent = post.title;
-        modalDescr.textContent = post.description;
-        elements.modalLink.setAttribute('href', `${post.link}`);
-      });
+      postButton.textContent = i18instance.t('viewPost');
 
       elements.postsList.prepend(postLi);
       postLi.appendChild(postLink);
@@ -65,31 +45,30 @@ const renderFeed = (elements) => {
   feedLi.appendChild(feedP);
 };
 
-const renderSuccessForm = (elements) => {
+const renderSuccessForm = (elements, i18instance) => {
   elements.input.classList.remove('is-invalid');
   errParagraph.classList.remove('text-danger');
   errParagraph.classList.add('text-success');
-  errParagraph.textContent = i18nInst.t('rssLoaded');
+  errParagraph.textContent = i18instance.t('rssLoaded');
   elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
   const { input } = elements;
   input.value = '';
   elements.input.focus();
 };
 
-const renderErrorsForm = (elements) => {
+const renderErrorsForm = (elements, i18instance) => {
   elements.input.classList.add('is-invalid');
   errParagraph.classList.remove('text-success');
   errParagraph.classList.add('text-danger');
-  errParagraph.textContent = i18nInst.t(`errors.${state.form.error}`);
+  errParagraph.textContent = i18instance.t(`errors.${state.form.error}`);
   elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
 };
 
-const render = (elements) => (path, value) => {
-  if (path === 'form.isValid' && value === true) renderSuccessForm(elements);
-  if (path === 'form.error') renderErrorsForm(elements);
+const render = (elements, i18instance) => (path, value) => {
+  if (path === 'form.isValid' && value === true) renderSuccessForm(elements, i18instance);
+  if (path === 'form.error') renderErrorsForm(elements, i18instance);
   if (path === 'feedsAdded') renderFeed(elements);
-  if (path === 'postsAdded') renderPosts(elements);
-  // console.log(state, 'state after render');
+  if (path === 'postsAdded') renderPosts(elements, i18instance);
 };
 
 export default render;

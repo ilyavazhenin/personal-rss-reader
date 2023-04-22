@@ -1,10 +1,15 @@
-const changeVisitedPostsStyle = (postElement) => {
-  postElement.addEventListener('click', (e) => {
-    const postTitleID = e.target.getAttribute('data-id');
-    const visitedPost = document.querySelector(`a[data-id="${postTitleID}"]`);
-    visitedPost.classList.remove('fw-bold');
-    visitedPost.classList.add('fw-normal', 'link-secondary');
-  });
+const passPostDataToModal = (elements, postID, state) => {
+  const { modalTitle, modalDescr } = elements;
+  const post = state.postsAdded.find((elem) => elem.postID === postID);
+  modalTitle.textContent = post.title;
+  modalDescr.textContent = post.description;
+  elements.modalLink.setAttribute('href', `${post.link}`);
 };
 
-export default changeVisitedPostsStyle;
+const changeVisitedPostsStyle = (postID) => {
+  const visitedPost = document.querySelector(`a[data-id="${postID}"]`);
+  visitedPost.classList.remove('fw-bold');
+  visitedPost.classList.add('fw-normal', 'link-secondary');
+};
+
+export { changeVisitedPostsStyle, passPostDataToModal };

@@ -109,11 +109,13 @@ export default () => {
     // Posts 'Read Full' button controller:
     elements.modalWindow.addEventListener('show.bs.modal', (e) => {
       const id = e.relatedTarget.getAttribute('data-id');
-      const post = state.postsAdded.find((elem) => elem.postID === id);
-      const { modalTitle, modalDescr } = elements;
-      modalTitle.textContent = post.title;
-      modalDescr.textContent = post.description;
-      elements.modalLink.setAttribute('href', `${post.link}`);
+      watchedState.visitedPosts.push(id);
+    });
+
+    // Post links controller to make posts style visited:
+    elements.postsList.addEventListener('click', (e) => {
+      const id = e.target.getAttribute('data-id');
+      if (id) watchedState.visitedPosts.push(id);
     });
   });
 };

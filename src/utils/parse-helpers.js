@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import uniqueId from 'lodash.uniqueid';
+
 const urlTemplate = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
 
 const makeDOM = (response) => {
@@ -11,13 +14,11 @@ const getPostsDataFromDOM = (DOM) => {
   return posts;
 };
 
-let feedIDCounter = 0;
-
 const getFeedHeadingsFromDOM = (DOM) => {
   const feedTitle = DOM.querySelector('channel > title').textContent;
   const feedDescr = DOM.querySelector('channel > description').textContent;
   const feed = {
-    feedID: feedIDCounter += 1,
+    feedID: uniqueId('feed'),
     title: feedTitle,
     description: feedDescr,
   };

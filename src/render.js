@@ -1,5 +1,5 @@
 import state from './state.js';
-import changeVisitedPostsStyle from './utils/visited-posts.js';
+import { changeVisitedPostsStyle, passPostDataToModal } from './utils/visited-posts.js';
 import { createPostButton, createPostLi, createPostLink } from './utils/posts-render-helpers.js';
 
 const errParagraph = document.createElement('p');
@@ -23,8 +23,6 @@ const renderPosts = (elements, i18instance) => {
       elements.postsList.prepend(postLi);
       postLi.appendChild(postLink);
       postLi.appendChild(postButton);
-
-      changeVisitedPostsStyle(postLi);
     });
 };
 
@@ -69,6 +67,10 @@ const render = (elements, i18instance) => (path, value) => {
   if (path === 'form.error') renderErrorsForm(elements, i18instance);
   if (path === 'feedsAdded') renderFeed(elements);
   if (path === 'postsAdded') renderPosts(elements, i18instance);
+  if (path === 'visitedPosts') {
+    changeVisitedPostsStyle(value[value.length - 1]);
+    passPostDataToModal(elements, value[value.length - 1], state);
+  }
 };
 
 export default render;

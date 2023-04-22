@@ -30,6 +30,7 @@
     "eslint-config-airbnb": "^19.0.4",
     "i18next": "^22.4.13",
     "lodash.some": "^4.6.0",
+    "lodash.uniqueid": "^4.0.1",
     "on-change": "^4.0.2",
     "yup": "^1.0.2"
   },

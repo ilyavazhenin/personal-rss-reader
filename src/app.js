@@ -40,15 +40,9 @@ export default () => {
     const pushOnlyNewPosts = (DOMobj, addedPosts) => {
       const postsData = getPostsDataFromDOM(DOMobj);
       const newPosts = [];
-      postsData.forEach((item) => {
-        const postID = item.querySelector('guid').textContent;
+      postsData.forEach((post) => {
+        const { postID } = post;
         if (!some(addedPosts, ['postID', postID])) {
-          const post = {
-            title: item.querySelector('title').textContent,
-            description: item.querySelector('description').textContent,
-            link: item.querySelector('link').textContent,
-            postID,
-          };
           newPosts.push(post);
         }
       });
@@ -65,23 +59,16 @@ export default () => {
           state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
         }));
     };
-    // WORKS!
+
     const getFeedAndPosts = (responseContent, url) => {
       const DOM = makeDOM(responseContent);
-      // eslint-disable-next-line no-param-reassign
       watchedState.form.isValid = true;
       state.form.error = '';
-      if (DOM.querySelector('rss' && '[version]')) {
-        const newFeed = getFeedHeadingsFromDOM(DOM);
-        pushOnlyNewPosts(DOM, state.postsAdded);
-        watchedState.feedsAdded.push(newFeed);
-        state.urlsAdded.push(url);
-        state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
-      } else {
-        const rssNotValid = new Error();
-        rssNotValid.type = 'RSSNotValid';
-        throw rssNotValid;
-      }
+      const newFeed = getFeedHeadingsFromDOM(DOM);
+      pushOnlyNewPosts(DOM, state.postsAdded);
+      watchedState.feedsAdded.push(newFeed);
+      state.urlsAdded.push(url);
+      state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
     };
 
     const processForm = async (url) => {

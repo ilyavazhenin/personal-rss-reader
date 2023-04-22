@@ -5,7 +5,7 @@ const state = {
   },
   urlsAdded: [],
   feedsAdded: [], // { feedID, title, descripton }
-  postsAdded: [], // { feedID, postID, title, description, link, read: true/false }
+  postsAdded: [], // { feedID, postID, title, description, link }
   updateTimer: null,
   visitedPosts: [], // postIDs
 };

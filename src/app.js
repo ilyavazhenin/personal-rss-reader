@@ -52,10 +52,12 @@ export default () => {
     const checkForNewPosts = () => {
       clearTimeout(state.updateTimer);
       const requests = state.urlsAdded.map((url) => axios.get(`${urlTemplate}${url}`));
-      Promise.all(requests)
+      Promise.allSettled(requests)
         .then((responses) => responses.forEach((response) => {
-          const DOM = makeDOM(response.data.contents);
-          pushOnlyNewPosts(DOM, state.postsAdded);
+          if (response.status === 'fulfilled') {
+            const DOM = makeDOM(response.value.data.contents);
+            pushOnlyNewPosts(DOM, state.postsAdded);
+          }
           state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
         }));
     };

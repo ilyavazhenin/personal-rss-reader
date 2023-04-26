@@ -12,3 +12,6 @@ rules:
     - error
     - ignorePackages
     - js: always
+  no-param-reassign: 
+     - error
+     - { props: false }

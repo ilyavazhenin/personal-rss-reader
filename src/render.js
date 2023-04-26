@@ -2,18 +2,12 @@ import state from './state.js';
 import { changeVisitedPostsStyle, passPostDataToModal } from './utils/visited-posts.js';
 import { createPostButton, createPostLi, createPostLink } from './utils/posts-render-helpers.js';
 
-const errParagraph = document.createElement('p');
-errParagraph.classList.add('feedback', 'm-0', 'position-absolute', 'small');
-
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
 const renderPosts = (elements, i18instance) => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
-  const alreadyRenderedIDs = Array.from(document.querySelectorAll('.posts a'))
-    .map((item) => item.getAttribute('data-id'));
-
-  state.postsAdded.filter((post) => !alreadyRenderedIDs.includes(post.postID))
+  state.postsAdded.filter((post) => post.isNew === true)
     .forEach((el) => {
       const postLi = createPostLi();
       const postLink = createPostLink(el);
@@ -43,27 +37,31 @@ const renderFeed = (elements) => {
   feedLi.appendChild(feedP);
 };
 
-const renderSuccessForm = (elements, i18instance) => {
-  elements.input.classList.remove('is-invalid');
-  errParagraph.classList.remove('text-danger');
-  errParagraph.classList.add('text-success');
-  errParagraph.textContent = i18instance.t('rssLoaded');
-  elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
+const focusFieldAfterSuccess = (elements) => {
   const { input } = elements;
   input.value = '';
   elements.input.focus();
 };
 
+const renderSuccessForm = (elements, i18instance) => {
+  elements.input.classList.remove('is-invalid');
+  elements.feedBackP.classList.remove('text-danger');
+  elements.feedBackP.classList.add('text-success');
+  elements.feedBackP.textContent = i18instance.t('rssLoaded');
+  elements.rssExampleP.insertAdjacentElement('afterend', elements.feedBackP);
+};
+
 const renderErrorsForm = (elements, i18instance) => {
   elements.input.classList.add('is-invalid');
-  errParagraph.classList.remove('text-success');
-  errParagraph.classList.add('text-danger');
-  errParagraph.textContent = i18instance.t(`errors.${state.form.error}`);
-  elements.rssExampleP.insertAdjacentElement('afterend', errParagraph);
+  elements.feedBackP.classList.remove('text-success');
+  elements.feedBackP.classList.add('text-danger');
+  elements.feedBackP.textContent = i18instance.t(`errors.${state.form.error}`);
+  elements.rssExampleP.insertAdjacentElement('afterend', elements.feedBackP);
 };
 
 const render = (elements, i18instance) => (path, value) => {
-  if (path === 'form.isValid' && value === true) renderSuccessForm(elements, i18instance);
+  if (path === 'form.status' && value === 'success') renderSuccessForm(elements, i18instance);
+  if (path === 'form.status' && value === 'readyToInput') focusFieldAfterSuccess(elements);
   if (path === 'form.error') renderErrorsForm(elements, i18instance);
   if (path === 'feedsAdded') renderFeed(elements);
   if (path === 'postsAdded') renderPosts(elements, i18instance);

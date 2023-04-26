@@ -1,11 +1,11 @@
 const state = {
   form: {
-    isValid: '',
+    status: 'readyToInput', // success, fail, fetching
     error: '',
   },
   urlsAdded: [],
   feedsAdded: [], // { feedID, title, descripton }
-  postsAdded: [], // { feedID, postID, title, description, link }
+  postsAdded: [], // { feedID, postID, title, description, link, isNew: true/false }
   updateTimer: null,
   visitedPosts: [], // postIDs
 };

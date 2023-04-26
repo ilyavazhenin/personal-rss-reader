@@ -27,6 +27,7 @@ export default () => {
     modalLink: document.querySelector('.full-article'),
     postsList: document.querySelector('.posts .list-group'),
     feedList: document.querySelector('.feeds .list-group'),
+    feedBackP: document.querySelector('p.feedback'),
   };
 
   const i18nInst = i18next.createInstance();
@@ -43,10 +44,16 @@ export default () => {
       postsData.forEach((post) => {
         const { postID } = post;
         if (!some(addedPosts, ['postID', postID])) {
+          post.isNew = true;
           newPosts.push(post);
         }
       });
       watchedState.postsAdded.push(...newPosts);
+      state.postsAdded.map((post) => {
+        const oldPost = post;
+        oldPost.isNew = false;
+        return oldPost;
+      });
     };
 
     const checkForNewPosts = () => {
@@ -64,26 +71,29 @@ export default () => {
 
     const getFeedAndPosts = (responseContent, url) => {
       const DOM = makeDOM(responseContent);
-      watchedState.form.isValid = true;
+      watchedState.form.status = 'success';
       state.form.error = '';
       const newFeed = getFeedHeadingsFromDOM(DOM);
       pushOnlyNewPosts(DOM, state.postsAdded);
       watchedState.feedsAdded.push(newFeed);
+      watchedState.form.status = 'readyToInput';
       state.urlsAdded.push(url);
       state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
     };
 
     const processForm = async (url) => {
       validateForm(url, state.urlsAdded)
-        .then(() => axios.get(`${urlTemplate}${url}`))
+        .then(() => {
+          watchedState.form.status = 'fetching';
+          return axios.get(`${urlTemplate}${url}`);
+        })
         .then((response) => {
           getFeedAndPosts(response.data.contents, url);
         })
         .catch((err) => {
-          // eslint-disable-next-line no-param-reassign
           if (err.name === 'AxiosError') err.type = 'AxiosError'; // coz axios error obj differs :(
           watchedState.form.error = err.type;
-          state.form.isValid = false;
+          state.form.status = 'fail';
         });
     };
 

@@ -62,7 +62,7 @@ const renderErrorsForm = (elements, i18instance) => {
 const render = (elements, i18instance) => (path, value) => {
   if (path === 'form.status' && value === 'success') renderSuccessForm(elements, i18instance);
   if (path === 'form.status' && value === 'readyToInput') focusFieldAfterSuccess(elements);
-  if (path === 'form.error') renderErrorsForm(elements, i18instance);
+  if (path === 'form.status' && value === 'fail') renderErrorsForm(elements, i18instance);
   if (path === 'feedsAdded') renderFeed(elements);
   if (path === 'postsAdded') renderPosts(elements, i18instance);
   if (path === 'visitedPosts') {

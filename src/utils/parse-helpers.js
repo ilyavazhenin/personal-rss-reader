@@ -40,6 +40,11 @@ const getFeedHeadingsFromDOM = (DOM) => {
   return feed;
 };
 
-export {
-  urlTemplate, makeDOM, getPostsDataFromDOM, getFeedHeadingsFromDOM,
+const parseDataFromSource = (response) => {
+  const parsedDOM = makeDOM(response);
+  const postsData = getPostsDataFromDOM(parsedDOM);
+  const feedData = getFeedHeadingsFromDOM(parsedDOM);
+  return { postsData, feedData };
 };
+
+export { urlTemplate, parseDataFromSource };

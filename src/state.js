@@ -6,7 +6,6 @@ const state = {
   urlsAdded: [],
   feedsAdded: [], // { feedID, title, descripton }
   postsAdded: [], // { feedID, postID, title, description, link, isNew: true/false }
-  updateTimer: null,
   visitedPosts: [], // postIDs
 };
 

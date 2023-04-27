@@ -11,9 +11,7 @@ import validateForm from './utils/form-validation.js';
 
 import {
   urlTemplate,
-  makeDOM,
-  getPostsDataFromDOM,
-  getFeedHeadingsFromDOM,
+  parseDataFromSource,
 } from './utils/parse-helpers.js';
 
 export default () => {
@@ -38,8 +36,7 @@ export default () => {
   }).then(() => {
     const watchedState = onChange(state, render(elements, i18nInst));
 
-    const pushOnlyNewPosts = (DOMobj, addedPosts) => {
-      const postsData = getPostsDataFromDOM(DOMobj);
+    const pushOnlyNewPosts = (postsData, addedPosts) => {
       const newPosts = [];
       postsData.forEach((post) => {
         const { postID } = post;
@@ -57,28 +54,29 @@ export default () => {
     };
 
     const checkForNewPosts = () => {
-      clearTimeout(state.updateTimer);
-      const requests = state.urlsAdded.map((url) => axios.get(`${urlTemplate}${url}`));
-      Promise.allSettled(requests)
-        .then((responses) => responses.forEach((response) => {
-          if (response.status === 'fulfilled') {
-            const DOM = makeDOM(response.value.data.contents);
-            pushOnlyNewPosts(DOM, state.postsAdded);
-          }
-          state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
-        }));
+      setTimeout(() => {
+        const requests = state.urlsAdded.map((url) => axios.get(`${urlTemplate}${url}`));
+        Promise.allSettled(requests)
+          .then((responses) => responses.forEach((response) => {
+            if (response.status === 'fulfilled') {
+              const { postsData } = parseDataFromSource(response.value.data.contents);
+              pushOnlyNewPosts(postsData, state.postsAdded);
+            }
+          }));
+        checkForNewPosts();
+      }, 5000);
     };
 
     const getFeedAndPosts = (responseContent, url) => {
-      const DOM = makeDOM(responseContent);
+      const { postsData, feedData } = parseDataFromSource(responseContent);
+
       watchedState.form.status = 'success';
       state.form.error = '';
-      const newFeed = getFeedHeadingsFromDOM(DOM);
-      pushOnlyNewPosts(DOM, state.postsAdded);
-      watchedState.feedsAdded.push(newFeed);
+
+      pushOnlyNewPosts(postsData, state.postsAdded);
+      watchedState.feedsAdded.push(feedData);
       watchedState.form.status = 'readyToInput';
       state.urlsAdded.push(url);
-      state.updateTimer = setTimeout(checkForNewPosts.bind(null, watchedState), 5000);
     };
 
     const processForm = async (url) => {
@@ -91,9 +89,9 @@ export default () => {
           getFeedAndPosts(response.data.contents, url);
         })
         .catch((err) => {
-          if (err.name === 'AxiosError') err.type = 'AxiosError'; // coz axios error obj differs :(
-          watchedState.form.error = err.type;
-          state.form.status = 'fail';
+          if (err.name === 'AxiosError') state.form.error = err.name;
+          else state.form.error = err.type;
+          watchedState.form.status = 'fail';
         });
     };
 
@@ -116,5 +114,7 @@ export default () => {
       const id = e.target.getAttribute('data-id');
       if (id) watchedState.visitedPosts.push(id);
     });
+
+    checkForNewPosts();
   });
 };

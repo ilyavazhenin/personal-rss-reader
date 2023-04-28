@@ -41,16 +41,10 @@ export default () => {
       postsData.forEach((post) => {
         const { postID } = post;
         if (!some(state.postsAdded, ['postID', postID])) {
-          post.isNew = true;
           newPosts.push(post);
         }
       });
       watchedState.postsAdded.push(...newPosts);
-      state.postsAdded.map((post) => {
-        const oldPost = post;
-        oldPost.isNew = false;
-        return oldPost;
-      });
     };
 
     const checkForNewPosts = () => {

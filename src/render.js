@@ -5,19 +5,18 @@ import { createPostButton, createPostLi, createPostLink } from './utils/posts-re
 const feedLiClassList = ['list-group-item', 'border-0', 'border-end-0'];
 const feedPClassList = ['m-0', 'small', 'text-black-50'];
 
-const renderPosts = (elements, i18instance) => {
+const renderPosts = (elements, i18instance, newPosts) => {
   document.querySelector('#feeds-zone').classList.remove('d-none');
-  state.postsAdded.filter((post) => post.isNew === true)
-    .forEach((el) => {
-      const postLi = createPostLi();
-      const postLink = createPostLink(el);
-      const postButton = createPostButton(el);
-      postButton.textContent = i18instance.t('viewPost');
+  newPosts.forEach((el) => {
+    const postLi = createPostLi();
+    const postLink = createPostLink(el);
+    const postButton = createPostButton(el);
+    postButton.textContent = i18instance.t('viewPost');
 
-      elements.postsList.prepend(postLi);
-      postLi.appendChild(postLink);
-      postLi.appendChild(postButton);
-    });
+    elements.postsList.prepend(postLi);
+    postLi.appendChild(postLink);
+    postLi.appendChild(postButton);
+  });
 };
 
 const renderFeed = (elements) => {
@@ -59,12 +58,12 @@ const renderErrorsForm = (elements, i18instance) => {
   elements.rssExampleP.insertAdjacentElement('afterend', elements.feedBackP);
 };
 
-const render = (elements, i18instance) => (path, value) => {
+const render = (elements, i18instance) => (path, value, previousValue, applyData) => {
   if (path === 'form.status' && value === 'success') renderSuccessForm(elements, i18instance);
   if (path === 'form.status' && value === 'readyToInput') focusFieldAfterSuccess(elements);
   if (path === 'form.error') renderErrorsForm(elements, i18instance);
   if (path === 'feedsAdded') renderFeed(elements);
-  if (path === 'postsAdded') renderPosts(elements, i18instance);
+  if (path === 'postsAdded') renderPosts(elements, i18instance, applyData.args);
   if (path === 'visitedPosts') {
     changeVisitedPostsStyle(value[value.length - 1]);
     passPostDataToModal(elements, value[value.length - 1], state);

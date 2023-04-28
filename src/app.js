@@ -36,11 +36,11 @@ export default () => {
   }).then(() => {
     const watchedState = onChange(state, render(elements, i18nInst));
 
-    const pushOnlyNewPosts = (postsData, addedPosts) => {
+    const pushOnlyNewPosts = (postsData) => {
       const newPosts = [];
       postsData.forEach((post) => {
         const { postID } = post;
-        if (!some(addedPosts, ['postID', postID])) {
+        if (!some(state.postsAdded, ['postID', postID])) {
           post.isNew = true;
           newPosts.push(post);
         }
@@ -60,7 +60,7 @@ export default () => {
           .then((responses) => responses.forEach((response) => {
             if (response.status === 'fulfilled') {
               const { postsData } = parseDataFromSource(response.value.data.contents);
-              pushOnlyNewPosts(postsData, state.postsAdded);
+              pushOnlyNewPosts(postsData);
             }
           }));
         checkForNewPosts();
@@ -69,11 +69,9 @@ export default () => {
 
     const getFeedAndPosts = (responseContent, url) => {
       const { postsData, feedData } = parseDataFromSource(responseContent);
-
       watchedState.form.status = 'success';
       state.form.error = '';
-
-      pushOnlyNewPosts(postsData, state.postsAdded);
+      pushOnlyNewPosts(postsData);
       watchedState.feedsAdded.push(feedData);
       watchedState.form.status = 'readyToInput';
       state.urlsAdded.push(url);
@@ -89,9 +87,9 @@ export default () => {
           getFeedAndPosts(response.data.contents, url);
         })
         .catch((err) => {
-          if (err.name === 'AxiosError') state.form.error = err.name;
-          else state.form.error = err.type;
-          watchedState.form.status = 'fail';
+          if (err.name === 'AxiosError') watchedState.form.error = err.name;
+          else watchedState.form.error = err.type;
+          state.form.status = 'fail';
         });
     };
 
